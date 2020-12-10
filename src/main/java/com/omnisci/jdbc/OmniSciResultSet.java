@@ -211,10 +211,15 @@ class OmniSciResultSet implements java.sql.ResultSet {
   @Override
   public byte getByte(int columnIndex)
           throws SQLException { // logger.debug("Entered "+ sql );
-    throw new UnsupportedOperationException("Not supported yet,"
-            + " line:" + new Throwable().getStackTrace()[0].getLineNumber()
-            + " class:" + new Throwable().getStackTrace()[0].getClassName()
-            + " method:" + new Throwable().getStackTrace()[0].getMethodName());
+    if (rowSet.columns.get(columnIndex - 1).nulls.get(offset)) {
+      wasNull = true;
+      return 0;
+    } else {
+      // assume column is str already for now
+      wasNull = false;
+      Long lObj = rowSet.columns.get(columnIndex - 1).data.int_col.get(offset);
+      return lObj.byteValue();
+    }
   }
 
   @Override
@@ -435,10 +440,7 @@ class OmniSciResultSet implements java.sql.ResultSet {
   @Override
   public byte getByte(String columnLabel)
           throws SQLException { // logger.debug("Entered "+ sql );
-    throw new UnsupportedOperationException("Not supported yet,"
-            + " line:" + new Throwable().getStackTrace()[0].getLineNumber()
-            + " class:" + new Throwable().getStackTrace()[0].getClassName()
-            + " method:" + new Throwable().getStackTrace()[0].getMethodName());
+    return getByte(findColumnByName(columnLabel));
   }
 
   @Override

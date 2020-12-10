@@ -1,4 +1,4 @@
-package com.mapd.common;
+package com.omnisci.common;
 
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;

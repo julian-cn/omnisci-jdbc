@@ -1,0 +1,12 @@
+{
+	"files.exclude": {
+		".idea": true,
+		"**/.classpath": true,
+		"**/.factorypath": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/*.iml": true,
+		"**/target/": true
+	},
+	"maven.view": "flat"
+}

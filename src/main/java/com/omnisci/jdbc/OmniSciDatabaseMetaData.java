@@ -858,6 +858,10 @@ SQLException - if a database access error occurs
           String catalog, String schemaPattern, String tableNamePattern, String[] types)
           throws SQLException {
     MAPDLOGGER.debug("Entered");
+    String modifiedTablePattern = null;
+    if(tableNamePattern != null) {
+      modifiedTablePattern = "(?i)" + tableNamePattern.replaceAll("%", ".*");
+    }
 
     List<String> tables;
     try {
@@ -901,22 +905,24 @@ SQLException - if a database access error occurs
             || schemaPattern.toLowerCase().equals(con.getCatalog().toLowerCase())) {
       // Now add some actual details for table name
       for (String x : tables) {
-        dataMap.get("TABLE_NAME").add(x);
-        nullMap.get("TABLE_NAME").add(false);
-        nullMap.get("TABLE_SCHEM").add(true);
-        nullMap.get("TABLE_CAT").add(true);
-        if (views.contains(x) == true) {
-          dataMap.get("TABLE_TYPE").add("VIEW");
-        } else {
-          dataMap.get("TABLE_TYPE").add("TABLE");
+        if (modifiedTablePattern == null || x.matches(modifiedTablePattern)) {
+          dataMap.get("TABLE_NAME").add(x);
+          nullMap.get("TABLE_NAME").add(false);
+          nullMap.get("TABLE_SCHEM").add(true);
+          nullMap.get("TABLE_CAT").add(true);
+          if (views.contains(x) == true) {
+            dataMap.get("TABLE_TYPE").add("VIEW");
+          } else {
+            dataMap.get("TABLE_TYPE").add("TABLE");
+          }
+          nullMap.get("TABLE_TYPE").add(false);
+          nullMap.get("REMARKS").add(true);
+          nullMap.get("TYPE_CAT").add(true);
+          nullMap.get("TYPE_SCHEM").add(true);
+          nullMap.get("TYPE_NAME").add(true);
+          nullMap.get("SELF_REFERENCING_COL_NAME").add(true);
+          nullMap.get("REF_GENERATION").add(true);
         }
-        nullMap.get("TABLE_TYPE").add(false);
-        nullMap.get("REMARKS").add(true);
-        nullMap.get("TYPE_CAT").add(true);
-        nullMap.get("TYPE_SCHEM").add(true);
-        nullMap.get("TYPE_NAME").add(true);
-        nullMap.get("SELF_REFERENCING_COL_NAME").add(true);
-        nullMap.get("REF_GENERATION").add(true);
       }
     }
     List<TColumn> columnsList = new ArrayList(columns.length);
@@ -1168,7 +1174,7 @@ each row is a column description Throws: SQLException - if a database access err
 
       for (String tableName : tables) {
         // check if the table matches the input pattern
-        if (tableNamePattern == null || tableNamePattern.equals(tableName)) {
+        if (tableNamePattern == null || tableName.matches(tableNamePattern)) {
           // grab meta data for table
           TTableDetails tableDetails =
                   con.client.get_table_details(con.session, tableName);

@@ -15,7 +15,7 @@
  */
 package com.omnisci.jdbc;
 
-import com.mapd.common.SockTransportProperties;
+import com.omnisci.common.SockTransportProperties;
 import com.omnisci.thrift.server.OmniSci;
 import com.omnisci.thrift.server.TDatumType;
 import com.omnisci.thrift.server.TOmniSciException;
